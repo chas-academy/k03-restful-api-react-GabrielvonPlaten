@@ -47,6 +47,7 @@ router.post('/logout', userAuth, async (req, res) => {
   }
 });
 
+// Get user's general information
 router.get('/:username/profile', async (req, res) => {
   let username = req.params.username;
 
@@ -63,6 +64,7 @@ router.get('/:username/profile', async (req, res) => {
   }
 });
 
+// Get user's oders
 router.get('/:username/profile/my-orders', userAuth, async (req, res) => {
   let username = req.params.username;
 
@@ -78,6 +80,21 @@ router.get('/:username/profile/my-orders', userAuth, async (req, res) => {
     res.status(500).send(err)
   }
 });
+
+// Get all registered users
+router.get('/users', userAuth, async (req, res) => {
+  if (req.user.isAdmin) {
+
+    try {
+      const users = await User.find().sort({ _id: -1 });
+      res.send(users);
+    } catch (err) {
+      res.send(500).send();
+    }
+  } else {
+    res.status(401).send();
+  }
+})
 
 
 // Toggle the admin role for the user

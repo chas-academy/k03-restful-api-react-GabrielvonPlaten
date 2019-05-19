@@ -37,8 +37,8 @@ const userSchema = new mongoose.Schema({
     minlength: 10,
     trim: true,
     validate(val) {
-      if (val.toLowerCase().includes('password') || val.toLowerCase().includes('admin') || val.toLowerCase().includes('root')) {
-        throw new Error('Password cannot be "Password", "admin" or "root"');
+      if (val.toLowerCase().includes('password') || val.toLowerCase().includes('root')) {
+        throw new Error('Password cannot be "Password" or "root"');
       }
     },
   },
