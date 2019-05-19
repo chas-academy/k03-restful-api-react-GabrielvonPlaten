@@ -79,4 +79,41 @@ router.get('/:username/profile/my-orders', userAuth, async (req, res) => {
   }
 });
 
+
+// Toggle the admin role for the user
+router.patch('/user/adminRole/:id', userAuth, async (req, res) => {
+  if (req.user.isAdmin) {
+    let _id = req.params.id;
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['isAdmin'];
+    const isValidOperation = updates.every(update => {
+      return allowedUpdates.includes(update);
+    })
+  
+    if (!isValidOperation) {
+      return res.status(400).send({ err: "Invalid update"});
+    }
+  
+    try {
+      const user = await User.findOne({ _id });
+
+      if (!user) {
+        return res.status(404).send();
+      };
+  
+      updates.forEach(update => {
+        return user[update] = req.body[update];
+      });
+  
+      await user.save();
+      res.status(200).send();
+    } catch (err) {
+      res.status(500).send();
+    }
+  } else {
+    res.status(401).send({ message: "You need to be an admin to use this function."});
+  }
+
+});
+
 module.exports = router;
